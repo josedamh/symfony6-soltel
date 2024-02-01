@@ -1,4 +1,0 @@
-app_aleatorio3:
-    path: /num-aleatorios/num3
-    controller: App\Controller\AleatorioController::index3
-    methods:

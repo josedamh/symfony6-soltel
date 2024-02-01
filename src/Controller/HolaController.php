@@ -17,4 +17,20 @@ class HolaController extends AbstractController
             'apellido' => $apellido,
         ]);
     }
+
+    #[Route('/saludos/{nombre}',
+    name: 'app_saludos', 
+    methods:'GET',
+    requirements: ["nombre"=> "Olga|Jessica|Macarena|Ángela"],
+    )]
+    public function saludosAlumnas(String $nombre): Response
+    {
+        return new Response("<h1>Hola $nombre</h1>");
+    }
+
+    public function suma(int $num1, String $num2): Response
+    {
+        $resultado = $num1 + $num2;
+        return new Response("<h1> La suma es: $resultado </h1>");
+    }
 }

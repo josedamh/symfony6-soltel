@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 // Atributos Symfony6 (#[Route]) y anotaciones Symfony5 (@Route)
 
-#[Route('/num-aleatorios', name: 'app_aleatorio')]
+#[Route('/num-aleatorios', name: 'app_aleatorio', methods: ["GET"])]
 /**
  * @Route("/num-aleatorios", name="app_aleatorios")
  */
