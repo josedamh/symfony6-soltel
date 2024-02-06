@@ -12,10 +12,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
-#[Route('/aulas', name: 'app_aulas')]
+#[Route('/aulas', name: 'app_aulas')] // enrutamiento con atributos, también lo hemos hecho con yaml, xml,,,
 class AulasController extends AbstractController
 {
-    #[Route('/{numAula}/{capacidad}/{docente}/{hardware}', name: 'app_aulas_insertarAula')]
+    #[Route('/{numAula}/{capacidad}/{docente}/{hardware}', name: 'app_aulas_insertarAula')] // Insertar datos con parámetros
 
     public function index(
         int $numAula, 
@@ -79,5 +79,21 @@ class AulasController extends AbstractController
         }
 
         return new Response("<h1>Registros insertados </h1>");
+    }
+
+    #[Route('/consultarAulas', name: 'app_aulas_consultarAulas')]
+    public function consultarAulas(ManagerRegistry $gestorFilas) : Response 
+    {
+        // endpoint de ejemplo: http://127.0.0.1:8000/aulas/consultarAulas
+        // Saco el gestor de entidades a partir del gestor de filas que es más generico
+        $gestorEntidades = $gestorFilas->getManager();
+        // Desde el gestor de entidades, saco el repositorio de la clase
+        $repoAulas = $gestorEntidades->getRepository(Aulas::class);
+        $filasAulas = $repoAulas->findAll();
+
+        return $this->render('aulas/index.html.twig', [
+            'controller_name' => 'Controlador Aulas',
+            'tabla' => $filasAulas,
+        ]);
     }
 }
