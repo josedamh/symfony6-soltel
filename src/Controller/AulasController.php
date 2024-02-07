@@ -12,6 +12,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
+
+
+
 #[Route('/aulas', name: 'app_aulas')] // enrutamiento con atributos, también lo hemos hecho con yaml, xml,,,
 class AulasController extends AbstractController
 {
@@ -86,6 +89,9 @@ class AulasController extends AbstractController
     {
         // endpoint de ejemplo: http://127.0.0.1:8000/aulas/consultarAulas
         // Saco el gestor de entidades a partir del gestor de filas que es más generico
+        
+        // SELECT con twig
+        
         $gestorEntidades = $gestorFilas->getManager();
         // Desde el gestor de entidades, saco el repositorio de la clase
         $repoAulas = $gestorEntidades->getRepository(Aulas::class);

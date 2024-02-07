@@ -11,6 +11,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\AlumnosRepository;
+
+/**
+ * REANUDAR BBDD
+ * - En MySQL: DROP DATABASE soltel_liga;
+ * php bin/console doctrine:database:create
+ * php bin/console doctrine:migrations:migrate 
+ * 
+ * LISTADO ENDPOINTS
+ * http://127.0.0.1:8000/aulas/23/15/Iván Rodríguez/1
+ * http://127.0.0.1:8000/aulas/insertarAulas
+ * http://127.0.0.1:8000/alumnos/insertarAlumnos
+ * http://127.0.0.1:8000/alumnos/insertar/45612378K/Juan Carlos/22/0/2001-09-16/23
+ * http://127.0.0.1:8000/clubes/insertarClubes
+ * 
+ * SACAR LISTADO DE TABLAS
+ * php bin/console dbal:run-sql 'SELECT * FROM alumnos'
+ */
+
 
 #[Route('/alumnos', name: 'app_alumnos')]
 class AlumnosController extends AbstractController
@@ -73,8 +93,8 @@ class AlumnosController extends AbstractController
                     // $aula = $gestorEntidades->getRepository(Aulas::class)->findOneBy(['num_aula' => $registro['num_aula']]);
                     // $alumno->setAulasNumAula($aula);
                     
-                    $paramBusqueda = ["num_aula" => $registro['num_aula']];
                     $repoAulas = $gestorEntidades->getRepository(Aulas::class);
+                    $paramBusqueda = ["num_aula" => $registro['num_aula']];
                     $aula = $repoAulas->findOneBy($paramBusqueda);
 
                     $alumno->setAulasNumAula($aula);
@@ -116,7 +136,7 @@ class AlumnosController extends AbstractController
                 return new Response("<h1>Alumnado insertado</h1>");
             }
 
-            // con json
+            // SELECT con json
 
             #[Route('/verAlumnos/{aula}/{sexo}', name: 'app_alumnos_ver_alumnos')]
             public function verAlumnos(EntityManagerInterface $gestorEntidades,
@@ -142,7 +162,58 @@ class AlumnosController extends AbstractController
                 return new JsonResponse($json);
 
             }
-    
+
+            #[Route('/consultarAlumnos', name: 'app_alumnos_consultar_alumnos')]
+            public function consultarAlumnos(ManagerRegistry $gestorDoctrine): Response
+            {
+                $conexion = $gestorDoctrine->getConnection();
+                $alumnos = $conexion
+                    ->prepare(" SELECT nif AS dni, nombre, edad, sexo, fechanac, num_aula, docente
+                                from alumnos
+                                join aulas
+                                on num_aula=aulas_num_aula;
+                            ")
+                    ->executeQuery()
+                    ->fetchAllAssociative();
+
+                    /*
+                    Para probar correctamente
+                    $contenidoAlumnos = json_encode($alumnos);
+                    return new Response($contenidoAlumnos);
+                    */
+                    return $this->render('alumnos/index.html.twig', [
+                        'controller_name' => 'Controlador Alumnos',
+                        'filasAlumnos' => $alumnos,
+                    ]);
+                    
+            }
+
+            /**
+             * @todo crear método en el repositorio para hacer el JOIN
+             * 
+             */
+            
+            #[Route('/consultarAlumnosAulas', name: 'app_alumnos_consultar_alumnos_aulas')]
+            public function consultarAlumnosAulas(AlumnosRepository $repoAlumno): Response
+            {
+                $alumnos = $repoAlumno->unirAlumnosAulas();
+                
+                return $this->render('alumnos/index.html.twig', [
+                    'controller_name' => 'Controlador Alumnos',
+                    'filasAlumnos' => $alumnos,
+                ]);
+            }
+
+            #[Route('/consultarAlumnas/{fecha}', name: 'app_alumnos_consultar_alumnas')]
+            public function consultarAlumnas(AlumnosRepository $repoAlumno, String $fecha): Response{
+                
+                // Ejemplo endpoint: http://127.0.0.1:8000/alumnos/consultarAlumnas/1994-02-07
+                $alumnas = $repoAlumno->consultarAlumnas($fecha);
+                return $this->render('alumnos/index.html.twig', [
+                    'controller_name' => 'Controlador Alumnos',
+                    'RegistrosAlumnas' => $alumnas,
+                ]);
+            }
 }
 
     

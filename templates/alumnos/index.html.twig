@@ -3,18 +3,69 @@
 {% block title %}Hello AlumnosController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<main class="example-wrapper">
+    <h1>Hola {{ controller_name }}! <i class="fa-solid fa-check text-light btn btn-outline-success p-2"></i></h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/symfony6-soltel/src/Controller/AlumnosController.php</code></li>
-        <li>Your template at <code>/var/www/html/symfony6-soltel/templates/alumnos/index.html.twig</code></li>
-    </ul>
-</div>
+    <section>
+    {% if filasAlumnos is defined %}
+        <h2>Tabla Alumnos</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>NIF</th>
+                    <th>Nombre</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Sexo</th>
+                    <th>Nº Aula</th>          
+                    <th>Docente</th>
+                </tr>
+            </thead> 
+            <tbody>
+                {% for alumno in filasAlumnos %}
+                    {% if alumno.sexo %}
+                        {% set sexo = "Mujer" %}
+                    {% else %}
+                        {% set sexo = "Hombre" %}
+                    {% endif %}
+                    <tr>
+                        <td>{{ alumno.dni }}</td>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.fechanac|date('Y-m-d') }}</td>
+                        <td>{{ sexo }}</td>
+                        <td>{{ alumno.num_aula }}</td>
+                        <td>{{ alumno.docente }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>       
+        </table>
+        {% endif %}
+
+
+        {% if RegistrosAlumnas is defined %}
+        <h2>Tabla Alumnas</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>NIF</th>
+                    <th>Nombre</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Edad</th>
+                </tr>
+            </thead> 
+            <tbody>
+                {% for alumna in RegistrosAlumnas %}
+                    <tr>
+                        <td>{{ alumna.nif }}</td>
+                        <td>{{ alumna.nombre }}</td>
+                        <td>{{ alumna.fechanac|date('Y-m-d') }}</td>
+                        <td>{{ alumna.edad }}</td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>       
+        </table>
+        {% endif %}
+    </section>
+</main>
 {% endblock %}

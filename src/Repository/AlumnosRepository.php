@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Alumnos;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use DateTime;
 
 /**
  * @extends ServiceEntityRepository<Alumnos>
@@ -45,4 +46,48 @@ class AlumnosRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * Definimos un método para hacer el JOIN en el repositorio
+     * 
+     */
+
+     public function unirAlumnosAulas(): array {
+        return $this->createQueryBuilder('a')
+            ->innerJoin("a.aulas_num_aula", "aula")
+            ->select("a.nif AS dni", "a.nombre", "a.fechanac", "a.sexo", "aula.num_aula", "aula.docente")
+            ->orderBy('a.nombre', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+     }
+
+
+     public function consultarAlumnas(String $fecha): array {
+
+        /*
+        $objetoFecha = new DateTime($fecha);
+        $constructorConsultas = $this->createQueryBuilder("a");
+        return $constructorConsultas
+            ->where("a.sexo = :paramSexo")
+            ->andWhere("a.fechanac > :paramFecha")
+            ->setParameter("paramSexo", 1)
+            ->setParameter("paramFecha", $objetoFecha)
+            ->orderBy('a.nombre', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+        */
+
+        $this->createQueryBuilder("a")
+        ->where("a.sexo = :paramSexo")
+        ->andWhere("a.fechanac > :paramFecha")
+        ->setParameter("paramSexo", 1)
+        ->setParameter("paramFecha", new DateTime($fecha))
+        ->orderBy('a.nombre', 'DESC')
+        ->getQuery()
+        ->getResult();
+     }
+
+     
 }
