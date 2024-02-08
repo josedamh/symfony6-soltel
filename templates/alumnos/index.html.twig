@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AlumnosController!{% endblock %}
+
+{% block body %}
+
+<main class="example-wrapper">
+    <h1>Hola {{ controller_name }}! <i class="fa-solid fa-check text-light btn btn-outline-success p-2"></i></h1>
+
+    <section>
+    {% if filasAlumnos is defined %}
+        <h2>Tabla Alumnos</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>NIF</th>
+                    <th>Nombre</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Sexo</th>
+                    <th>Nº Aula</th>          
+                    <th>Docente</th>
+                </tr>
+            </thead> 
+            <tbody>
+                {% for alumno in filasAlumnos %}
+                    {% if alumno.sexo %}
+                        {% set sexo = "Mujer" %}
+                    {% else %}
+                        {% set sexo = "Hombre" %}
+                    {% endif %}
+                    <tr>
+                        <td>{{ alumno.dni }}</td>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.fechanac|date('Y-m-d') }}</td>
+                        <td>{{ sexo }}</td>
+                        <td>{{ alumno.num_aula }}</td>
+                        <td>{{ alumno.docente }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>       
+        </table>
+        {% endif %}
+
+
+        {% if RegistrosAlumnas is defined %}
+        <h2>Tabla Alumnas</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>NIF</th>
+                    <th>Nombre</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Edad</th>
+                </tr>
+            </thead> 
+            <tbody>
+                {% for alumna in RegistrosAlumnas %}
+                    <tr>
+                        <td>{{ alumna.nif }}</td>
+                        <td>{{ alumna.nombre }}</td>
+                        <td>{{ alumna.fechanac|date('Y-m-d') }}</td>
+                        <td>{{ alumna.edad }}</td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>       
+        </table>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}
